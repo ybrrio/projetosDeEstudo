@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        
+        #calculator {
+            width: 200px;
+            background-image: linear-gradient(#b7b7b7, #9c9c9c);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba (0, 0, 0, .8);
+            margin: 15px auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 5px;
+            grid-template-rows: auto repeat(5, 40px);
+        }
+        
+        button {
+            padding: .25em;
+        }
+        
+        #visor {
+            padding: 10px;
+            font-size: 1.4em;
+            text-align: right;
+            background-image: linear-gradient(#c5c5c5, #e0e0e0);
+            box-shadow: inset 3px 2px 0 white;
+            margin-bottom: 15px;
+            grid-column: 1 / -1;
+        }
+        
+        .mais {
+            background-color: #adadad;
+            grid-row: 5 / 7;
+            grid-column: 4 / 5;
+        }
+        
+        .ac {
+            grid-column: 1 / 3;
+        }
+        
+        .zero {
+            background-color: #adadad;
+            grid-column: 1 / 4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form name="calcform" method="POST" action="">
+        <div id="calculator">
+            <input type="text" name="visor" id="visor" disabled>
+            <input type="button" name="limpar" class="num ac" value="AC" onclick="calcLimpar ()">
+            <input type="button" name="multiplicar" class="oper" value="x" onclick="calcParse('multiplicar')">
+            <input type="button" name="dividir" class="oper" value="/" onclick="calcParse('dividir')">
+            <input type="button" name="num7" class="num" value="7" onclick="calcNum(7)">
+            <input type="button" name="num8" class="num" value="8" onclick="calcNum(8)">
+            <input type="button" name="num9" class="num" value="9" onclick="calcNum(9)">
+            <input type="button" name="igual" class="num" value="=" onclick="calcParse('resultado')">
+            <input type="button" name="num4" class="num" value="4" onclick="calcNum(4)">
+            <input type="button" name="num5" class="num" value="5" onclick="calcNum(5)">
+            <input type="button" name="num6" class="num" value="6" onclick="calcNum(6)">
+            <input type="button" name="subtrir" class="oper" value="-" onclick="calcParse('subtrair')">
+            <input type="button" name="num1" class="num" value="1" onclick="calcNum(1)">
+            <input type="button" name="num2" class="num" value="2" onclick="calcNum(2)">
+            <input type="button" name="num3" class="num" value="3" onclick="calcNum(3)">
+            <input type="button" name="somar" class="oper mais" value="+" onclick="calcParse('somar')">
+            <input type="button" name="num0" class="num zero" value="0" onclick="calcNum(0)">
+
+        </div>
+    </form>
+
+
+    <script>
+        // Função que adiciona os números no Visor quando pressionado os botões
+        function calcNum(num) {
+            if (typeof gvisor == 'undefined') {
+                document.calcform.visor.value = '';
+            }
+            document.calcform.visor.value = document.calcform.visor.value + num;
+            gvisor = 1;
+        }
+
+        // Função que limpa a calculadora e todas as variáveis existentes.
+        function calcLimpar() {
+            document.calcform.visor.value = '';
+            delete gvalor;
+            delete goper;
+            delete gvisor;
+        }
+
+        // Função que executa as operações básicas da calculadora
+        function calcOper(oper, valor1, valor2) {
+            if (oper == "somar") {
+                var valor = parseFloat(valor1) + parseFloat(valor2);
+            } else {
+                if (oper == "subtrair") {
+                    var valor = valor1 - valor2;
+                } else {
+                    if (oper == "multiplicar") {
+                        var valor = valor1 * valor2;
+                    } else {
+                        var valor = valor1 / valor2;
+                    }
+                }
+            }
+
+            return (valor);
+        }
+
+        // Função do algoritmo de "passagem" das ações do usuário
+        function calcParse(oper) {
+            var valor = document.calcform.visor.value;
+            delete gvisor;
+
+            if (typeof goper != 'undefined' && oper == 'resultado') {
+                gvalor = calcOper(goper, gvalor, valor);
+                document.calcform.visor.value = gvalor;
+                delete oper;
+                delete gvalor;
+                return (0);
+            }
+
+            if (typeof gvalor != 'undefined') {
+                gvalor = calcOper(goper, gvalor, valor);
+                goper = oper;
+                document.calcform.visor.value = gvalor;
+            } else {
+                gvalor = valor;
+                goper = oper;
+            }
+
+        }
+    </script>
+
+</body>
+
+</html>
